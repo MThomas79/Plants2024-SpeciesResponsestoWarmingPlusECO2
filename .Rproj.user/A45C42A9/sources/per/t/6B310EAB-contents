@@ -17,7 +17,7 @@ Survey of species screened for plant responses to warming + eCO2 induced changes
 Import and subset the data by plant group. Filter to Angle and LCI groups.
 Compare treatments to ensure biomass decline with warming stress. Yarrow biomass did not decline at warming treatment, thus it was not stressed sufficiently. This may explain why there was no significant changes in yarrow morphology.
 ```{r}
-Survey<-read.csv('Leaf_Angle_Survey_Data.csv')
+Survey<-read.csv('Data/Leaf_Angle_Survey_Data.csv')
 Survey$Treatment<-as.factor(Survey$Treatment)
 Survey$Temp<-as.factor(Survey$Temp)
 Survey$CO2<-as.factor(Survey$CO2)

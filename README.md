@@ -1,17 +1,27 @@
 # Plants-SpeciesSurveyWarmingpluseCO2-2024
 
-Authors:Michael  D. Thomas 1, Reagan Roberts   1, Scott A. Heckathorn 1, and Jennifer K. Boldt 2
-1	Department  of Environmental Sciences, University of Toledo, Toledo, OH 43606 , USA; 
-reagan.roberts@rockets.utoledo.edu
-2	Agricultural Research Service, United States Department of Agriculture (USDA), Toledo, OH 43606, USA; jennifer.boldt@usda.gov
+Authors:
+Michael  D. Thomas 1, Reagan Roberts   1, Scott A. Heckathorn 1, and Jennifer K. Boldt 2
+
+1	Department  of Environmental Sciences, University of Toledo, Toledo, OH 43606 , USA;
+2	Agricultural Research Service, United States Department of Agriculture (USDA), Toledo, OH 43606, USA;
+
 Correspondence: michael.thomas11@utoledo.edu (M.D.T.); scott.heckathorn@utoledo.edu (S.A.H.)
 
 
  This repository contains the data, r code and its output which informed our report on plant species survey of leaf hyponasty responses to warming plus elevated CO2.
  
-"Leaf_Angle_Survey_Data.xlsx" and "Leaf_Angle_Survey_Data.csv" Are identical aggregations of all the individual leaf angle survey experiment data sheets.
+"Data/" contains aggregated leaf angle data and all individual data collection sheets from the species survey experiments as well as images collected from the experiments. 
 
-"Individual Datasets" contains folders containing all individual data collection sheets from the species survey experiments as well as images collected from the experiments. 
+"Leaf_Angle_Survey_Data.xlsx" and "Leaf_Angle_Survey_Data.csv" Are     identical aggregations of all the individual leaf angle survey experiment data sheets.
+
+"Figures/" contains figures assocaited with this Rmd.
+
+"Angle.Poster" is a PNG file depicting a comparison of leaf angle and LCI   (Leaf Curl Index) between treatment groups by species. 
+
+"Mass.Poster" is a PNG file depicting a comparison of shoot mass between    treatment groups by species.
+
+"Survey.Poster" is a PNG file depicting a comparison of Leaf angle between  treatment groups by species.
 
 "Frontmatter.R" contains the required packages for R code
 
@@ -19,11 +29,7 @@ Correspondence: michael.thomas11@utoledo.edu (M.D.T.); scott.heckathorn@utoledo.
 
 "Survey.PDF" is a pdf of Survey.Rmd. 
 
-"Angle.Poster" is a PNG file depicting a comparison of leaf angle and LCI (Leaf Curl Index) between treatment groups by species. 
-
-"Mass.Poster" is a PNG file depicting a comparison of shoot mass between treatment groups by species.
-
-"Survey.Poster" is a PNG file depicting a comparison of Leaf angle between treatment groups by species.
+"SummaryData/" is folder containing summary statistic tables.
 
 "SummaryAngle.xlsx" is a summary table of the leaf angle by treatment and species containing averages, SD, and post-hoc comparison letters. 
 
