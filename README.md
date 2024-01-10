@@ -15,6 +15,8 @@ Correspondence: michael.thomas11@utoledo.edu (M.D.T.); scott.heckathorn@utoledo.
 
 "Leaf_Angle_Survey_Data.xlsx" and "Leaf_Angle_Survey_Data.csv" Are     identical aggregations of all the individual leaf angle survey experiment data sheets.
 
+"SurveyMetadata.txt" A text file containing the description of the column names and values found in "Leaf_Angle_Survey_Data."
+
 "Figures/" contains figures assocaited with this Rmd.
 
 "Angle.Poster" is a PNG file depicting a comparison of leaf angle and LCI   (Leaf Curl Index) between treatment groups by species. 
