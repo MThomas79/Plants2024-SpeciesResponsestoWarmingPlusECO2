@@ -1,0 +1,33 @@
+"Treatment","Temp","CO2","Plant","angle","anglesd","n","Letters","monospacedLetters","LetterMatrix.a","LetterMatrix.b","LetterMatrix.c","a"
+"Control","29","400","P.vulgaris",51.665,3.45296490956202,4,"b"," b",FALSE,TRUE,NA,NA
+"eCO2","29","800","P.vulgaris",55.5825,4.65150423698255,4,"ab","ab",TRUE,TRUE,NA,NA
+"Warming","37","400","P.vulgaris",58.8325,2.78295256876577,4,"ab","ab",TRUE,TRUE,NA,NA
+"Warming+eCO2","37","800","P.vulgaris",62.5533333333333,0.692555653600007,3,"a","a ",TRUE,FALSE,NA,NA
+"Control","30","400","S.lycopersicum",35.0625,4.58882247059817,4,"c","  c",FALSE,FALSE,TRUE,NA
+"eCO2","30","800","S.lycopersicum",40.1666666666667,2.84312035153866,3,"c","  c",FALSE,FALSE,TRUE,NA
+"Warming","38","400","S.lycopersicum",53,4.39222798436815,4,"b"," b ",FALSE,TRUE,FALSE,NA
+"Warming+eCO2","38","800","S.lycopersicum",68.6666666666667,2.64968551593077,3,"a","a  ",TRUE,FALSE,FALSE,NA
+"Control","30","400","S.melongena",33.7766666666667,1.3489378537699,3,"b"," b",FALSE,TRUE,NA,NA
+"eCO2","30","800","S.melongena",35.8325,1.2348380460611,4,"b"," b",FALSE,TRUE,NA,NA
+"Warming","38","400","S.melongena",45.9175,4.88738085958795,4,"a","a ",TRUE,FALSE,NA,NA
+"Warming+eCO2","38","800","S.melongena",49.25,2.84416361460916,4,"a","a ",TRUE,FALSE,NA,NA
+"Control","30","400","P.pruinosa",31.4583333333333,3.37422830683797,6,"b"," b",FALSE,TRUE,NA,NA
+"eCO2","30","800","P.pruinosa",41.0416666666667,4.8795918545168,6,"a","a ",TRUE,FALSE,NA,NA
+"Warming","38","400","P.pruinosa",33.5416666666667,3.7195989927231,6,"b"," b",FALSE,TRUE,NA,NA
+"Warming+eCO2","38","800","P.pruinosa",33.9166666666667,3.88801577500229,6,"b"," b",FALSE,TRUE,NA,NA
+"Control","30","400","H.rosa-sinensis",33.6666666666667,10.1050597887065,3,"a",NA,NA,NA,NA,TRUE
+"eCO2","30","800","H.rosa-sinensis",52.22,2.45892252826314,3,"a",NA,NA,NA,NA,TRUE
+"Warming","37","400","H.rosa-sinensis",44.89,4.14309063381433,3,"a",NA,NA,NA,NA,TRUE
+"Warming+eCO2","37","800","H.rosa-sinensis",48.8866666666667,12.5151761207477,3,"a",NA,NA,NA,NA,TRUE
+"Control","22","400","T.majus",42.3333333333333,13.9532158778302,3,"b"," b",FALSE,TRUE,NA,NA
+"eCO2","22","800","T.majus",34.4466666666667,11.4821441087165,3,"b"," b",FALSE,TRUE,NA,NA
+"Warming","28","400","T.majus",33,10.8645708612904,3,"b"," b",FALSE,TRUE,NA,NA
+"Warming+eCO2","28","800","T.majus",80.4433333333333,7.39314096533627,3,"a","a ",TRUE,FALSE,NA,NA
+"Control","28","400","C.annuum",44.6,5.11707435943626,5,"b"," b",FALSE,TRUE,NA,NA
+"eCO2","28","800","C.annuum",56.25,4.17723193833748,4,"a","a ",TRUE,FALSE,NA,NA
+"Warming","36","400","C.annuum",56.068,3.6012039653427,5,"a","a ",TRUE,FALSE,NA,NA
+"Warming+eCO2","36","800","C.annuum",41.5,7.16281601978812,4,"b"," b",FALSE,TRUE,NA,NA
+"Control","24","400","S.tuberosum",32.335,4.03958289926076,6,"c","  c",FALSE,FALSE,TRUE,NA
+"eCO2","24","800","S.tuberosum",37.055,3.08572681875762,6,"bc"," bc",FALSE,TRUE,TRUE,NA
+"Warming","32","400","S.tuberosum",41.335,5.44336568677872,6,"b"," b ",FALSE,TRUE,FALSE,NA
+"Warming+eCO2","32","800","S.tuberosum",56.335,4.93656088115333,4,"a","a  ",TRUE,FALSE,FALSE,NA

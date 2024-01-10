@@ -1,0 +1,13 @@
+"Treatment","Temp","CO2","Plant","LCI","LCIsd","n","Letters","monospacedLetters","LetterMatrix.a","LetterMatrix.b"
+"Control","29","400","P.vulgaris",0.105,0.0834665601703261,4,"ab","ab",TRUE,TRUE
+"eCO2","29","800","P.vulgaris",0.1025,0.0974251849711699,4,"b"," b",FALSE,TRUE
+"Warming","37","400","P.vulgaris",0.0325,0.0427200187265877,4,"b"," b",FALSE,TRUE
+"Warming+eCO2","37","800","P.vulgaris",0.403333333333333,0.257746645629644,3,"a","a ",TRUE,FALSE
+"Control","22","400","M.xpiperita",1.46666666666667,0.684202699010559,3,"a","a ",TRUE,FALSE
+"eCO2","22","800","M.xpiperita",0.47,0.1,3,"b"," b",FALSE,TRUE
+"Warming","28","400","M.xpiperita",0.25,0.0173205080756888,3,"b"," b",FALSE,TRUE
+"Warming+eCO2","28","800","M.xpiperita",0.766666666666667,0.115902257671425,3,"ab","ab",TRUE,TRUE
+"Control","30","400","R.multiflora",0.042,0.033466401061363,5,"b"," b",FALSE,TRUE
+"eCO2","30","800","R.multiflora",0.062,0.0109544511501033,5,"b"," b",FALSE,TRUE
+"Warming","38","400","R.multiflora",0.04,0.033166247903554,5,"b"," b",FALSE,TRUE
+"Warming+eCO2","38","800","R.multiflora",0.634,0.165770926280817,5,"a","a ",TRUE,FALSE

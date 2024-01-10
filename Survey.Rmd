@@ -1,0 +1,890 @@
+---
+title: "Survey"
+author: "Michael Thomas"
+date: "1/5/2023"
+output: pdf_document
+---
+
+```{r setup,echo=FALSE, include=FALSE}
+source('frontmatter.R')
+```
+
+
+Survey of species screened for plant responses to warming + eCO2 induced changes in leaf angle or leaf cupping/curling. 
+
+
+
+Import and subset the data by plant group. Filter to Angle and LCI groups.
+Compare treatments to ensure biomass decline with warming stress. Yarrow biomass did not decline at warming treatment, thus it was not stressed sufficiently. This may explain why there was no significant changes in yarrow morphology.
+```{r}
+Survey<-read.csv('Leaf_Angle_Survey_Data.csv')
+Survey$Treatment<-as.factor(Survey$Treatment)
+Survey$Temp<-as.factor(Survey$Temp)
+Survey$CO2<-as.factor(Survey$CO2)
+Survey$Group<-as.factor(Survey$Group)
+SurveyAngle<-Survey[c(1:6,38,59)]
+SurveyLCI<-Survey[c(1:6,57,59)]
+
+ggplot(data=SurveyAngle, aes(x=Plant, y=DryMass, fill=Treatment)) +
+  geom_bar(stat="identity", position=position_dodge())+
+  scale_fill_brewer(palette="Paired")+
+  theme(panel.background = element_rect(fill = "#F9F4F0FF", color = "#F9F4F0FF"),
+        axis.line=element_line(colour="black"),
+        axis.title.x = element_text(size = 24),
+        axis.text.x = element_text(size = 18, colour = 'black', angle= 45, hjust=1),
+        axis.title.y = element_text(size = 24),
+        axis.text.y = element_text(size = 18, colour = 'black'))
+
+DryMassSummary<- group_by(SurveyAngle, Plant, Treatment) %>%
+  summarise(Mass=mean(na.omit(DryMass)), Masssd=sd(na.omit(DryMass)), n=n())
+
+bbeanAngle<-na.omit(filter(SurveyAngle, Plant =='P.vulgaris', preserve = TRUE))
+tomatoAngle<-na.omit(filter(SurveyAngle, Plant =='S.lycopersicum', preserve = TRUE))
+eggplantAngle<-na.omit(filter(SurveyAngle, Plant =='S.melongena', preserve = TRUE))
+gcherryAngle<-filter(SurveyAngle, Plant =='P.pruinosa', preserve = TRUE)#dry mass values not available
+gcherryAngle<-gcherryAngle[c(1:7)]
+hibiscusAngle<-na.omit(filter(SurveyAngle, Plant =='H.rosa-sinensis', preserve = TRUE))
+mintAngle<-na.omit(filter(SurveyAngle, Plant =='M.xpiperita', preserve = TRUE))
+nasturtiumAngle<-na.omit(filter(SurveyAngle, Plant =='T.majus', preserve = TRUE))
+pepperAngle<-na.omit(filter(SurveyAngle, Plant =='C.annuum', preserve = TRUE))
+potatoAngle<-na.omit(filter(SurveyAngle, Plant =='S.tuberosum', preserve = TRUE))
+yarrowAngle<-na.omit(filter(SurveyAngle, Plant =='A.millefolium', preserve = TRUE))
+roseAngle<-na.omit(filter(SurveyAngle, Plant =='R.multiflora', preserve = TRUE))
+
+bbeanLCI<-na.omit(filter(SurveyLCI, Plant =='P.vulgaris', preserve = TRUE))
+tomatoLCI<-na.omit(filter(SurveyLCI, Plant =='S.lycopersicum', preserve = TRUE))
+eggplantLCI<-na.omit(filter(SurveyLCI, Plant =='S.melongena', preserve = TRUE))
+gcherryLCI<-filter(SurveyLCI, Plant =='P.pruinosa', preserve = TRUE)#dry mass values not available
+gcherryLCI<-gcherryLCI[c(1:6)]
+hibiscusLCI<-na.omit(filter(SurveyLCI, Plant =='H.rosa-sinensis', preserve = TRUE))
+mintLCI<-na.omit(filter(SurveyLCI, Plant =='M.xpiperita', preserve = TRUE))
+nasturtiumLCI<-na.omit(filter(SurveyLCI, Plant =='T.majus', preserve = TRUE))
+pepperLCI<-na.omit(filter(SurveyLCI, Plant =='C.annuum', preserve = TRUE))
+potatoLCI<-na.omit(filter(SurveyLCI, Plant =='S.tuberosum', preserve = TRUE))
+yarrowLCI<-na.omit(filter(SurveyLCI, Plant =='A.millefolium', preserve = TRUE))
+roseLCI<-na.omit(filter(SurveyLCI, Plant =='R.multiflora', preserve = TRUE))
+```
+
+examine data for normality and equal variance.
+
+```{r}
+summary(SurveyAngle)
+summary(SurveyLCI)
+
+angle.bbean.aov<-aov(Final_Abaxial_AVG~Temp*CO2, data = bbeanAngle)
+angle.tomato.aov<-aov(Final_Abaxial_AVG~Temp*CO2, data = tomatoAngle)
+angle.eggplant.aov<-aov(Final_Abaxial_AVG~Temp*CO2, data = eggplantAngle)
+angle.gcherry.aov<-aov(Final_Abaxial_AVG~Temp*CO2, data = gcherryAngle)
+angle.hibiscus.aov<-aov(Final_Abaxial_AVG~Temp*CO2, data = hibiscusAngle)
+#angle.mint.aov<-aov(Final_Abaxial_AVG~Temp*CO2, data = mintAngle)#no abaxial measure leaf curl more prominent
+angle.nasturtium.aov<-aov(Final_Abaxial_AVG~Temp*CO2, data = nasturtiumAngle)
+angle.pepper.aov<-aov(Final_Abaxial_AVG~Temp*CO2, data = pepperAngle)
+angle.potato.aov<-aov(Final_Abaxial_AVG~Temp*CO2, data = potatoAngle)
+angle.yarrow.aov<-aov(Final_Abaxial_AVG~Temp*CO2, data = yarrowAngle)
+#angle.rose.aov<-aov(Final_Abaxial_AVG~Temp*CO2, data = roseAngle)#no abaxial measure leaf curl more prominent
+
+LCI.bbean.aov<-aov(Final_LCI_Avg~Temp*CO2, data = bbeanLCI)
+#LCI.tomato.aov<-aov(Final_LCI_Avg~Temp*CO2, data = tomatoLCI) no LCI
+#LCI.eggplant.aov<-aov(Final_LCI_Avg~Temp*CO2, data = eggplantLCI) no LCI
+#LCI.gcherry.aov<-aov(Final_LCI_Avg~Temp*CO2, data = gcherryLCI) no LCI
+#LCI.hibiscus.aov<-aov(Final_LCI_Avg~Temp*CO2, data = hibiscusLCI) no LCI
+LCI.mint.aov<-aov(Final_LCI_Avg~Temp*CO2, data = mintLCI)
+#LCI.nasturtium.aov<-aov(Final_LCI_Avg~Temp*CO2, data = nasturtiumLCI) no LCI
+#LCI.pepper.aov<-aov(Final_LCI_Avg~Temp*CO2, data = pepperLCI) no LCI
+#LCI.potato.aov<-aov(Final_LCI_Avg~Temp*CO2, data = potatoLCI) no LCI
+#LCI.yarrow.aov<-aov(Final_LCI_Avg~Temp*CO2, data = yarrowLCI) no LCI
+LCI.rose.aov<-aov(Final_LCI_Avg~Temp*CO2, data = roseLCI)
+
+#normality plot aov for qq plots.
+plot(angle.bbean.aov)
+plot(angle.tomato.aov)
+plot(angle.eggplant.aov)
+plot(angle.gcherry.aov)
+plot(angle.hibiscus.aov)
+#plot(angle.mint.aov)
+plot(angle.nasturtium.aov)
+plot(angle.pepper.aov)
+plot(angle.potato.aov)
+plot(angle.yarrow.aov)
+#plot(angle.rose.aov)
+
+plot(LCI.bbean.aov)
+#plot(angle.tomato.aov)
+#plot(angle.eggplant.aov)
+#plot(angle.gcherry.aov)
+#plot(angle.hibiscus.aov)
+plot(LCI.mint.aov)
+#plot(angle.nasturtium.aov)
+#plot(angle.pepper.aov)
+#plot(angle.potato.aov)
+#plot(angle.yarrow.aov)
+plot(LCI.rose.aov)
+#plots all relatively normal, with the exception of small sample size in hibiscus. 
+
+#test for equal variance.
+
+bartlett.test(Final_Abaxial_AVG~interaction(Temp,CO2), data = bbeanAngle)
+bartlett.test(Final_Abaxial_AVG~interaction(Temp,CO2), data = tomatoAngle)
+bartlett.test(Final_Abaxial_AVG~interaction(Temp,CO2), data = eggplantAngle)
+bartlett.test(Final_Abaxial_AVG~interaction(Temp,CO2), data = gcherryAngle)
+bartlett.test(Final_Abaxial_AVG~interaction(Temp,CO2), data = hibiscusAngle)
+#bartlett.test(Final_Abaxial_AVG~interaction(Temp,CO2), data = mintAngle)#empty response column
+bartlett.test(Final_Abaxial_AVG~interaction(Temp,CO2), data = nasturtiumAngle)
+bartlett.test(Final_Abaxial_AVG~interaction(Temp,CO2), data = pepperAngle)
+bartlett.test(Final_Abaxial_AVG~interaction(Temp,CO2), data = potatoAngle)
+bartlett.test(Final_Abaxial_AVG~interaction(Temp,CO2), data = yarrowAngle)
+#bartlett.test(Final_Abaxial_AVG~interaction(Temp,CO2), data = roseAngle)#empty resposne column
+
+#all angle data pass bartlett test with no significant differences found in variance. 
+
+
+```
+LCI non-parametric test and post hoc
+
+```{r}
+
+
+#bartlett.test(Final_LCI_Avg~interaction(Temp,CO2), data = bbeanLCI)
+
+#bartlett.test(Final_LCI_Avg~interaction(Temp,CO2), data = mintLCI)
+
+#bartlett.test(Final_LCI_Avg~interaction(Temp,CO2), data = roseLCI)
+
+aovLCIbbean<-aov(Final_LCI_Avg~Temp*CO2, data = bbeanLCI)
+summary(aovLCIbbean)
+TukeyHSD(aovLCIbbean)
+plot(aovLCIbbean)
+
+aovLCImint<-aov(Final_LCI_Avg~Temp*CO2, data = mintLCI)
+summary(aovLCImint)
+TukeyHSD(aovLCImint)
+plot(aovLCImint)
+
+aovLCIrose<-aov(Final_LCI_Avg~Temp*CO2, data = roseLCI)
+summary(aovLCIrose)
+TukeyHSD(aovLCIrose)
+plot(aovLCIrose)
+
+
+#no LCI data pass bartlett test, suggesting unequal variance between treatment groups. ANOVA is not appropriate for analysis. 
+
+bbean.kruskal<-kruskal.test(Final_LCI_Avg ~ interaction(Temp,CO2), data = bbeanLCI)
+
+mint.kruskal<-kruskal.test(Final_LCI_Avg ~ interaction(Temp,CO2), data = mintLCI)
+
+rose.kruskal<-kruskal.test(Final_LCI_Avg ~ interaction(Temp,CO2), data = roseLCI)
+
+```
+
+Run Tukey test and assign Tukey comparison letters to a list, for use in summary table
+
+```{r}
+bbean.tukey<-TukeyHSD(angle.bbean.aov)
+bbean.HSD<-multcompLetters4(angle.bbean.aov,bbean.tukey)
+bbean.Tukey<-as.data.frame.list(bbean.HSD$`Temp:CO2`)
+bbean.Tukey$Treatment<-as.factor(c('Warming+eCO2', 'Warming', 'eCO2', 'Control'))
+
+tomato.tukey<-TukeyHSD(angle.tomato.aov)
+tomato.HSD<-multcompLetters4(angle.tomato.aov,tomato.tukey)
+tomato.Tukey<-as.data.frame.list(tomato.HSD$`Temp:CO2`)
+tomato.Tukey$Treatment<-as.factor(c('Warming+eCO2', 'Warming', 'eCO2', 'Control'))
+
+eggplant.tukey<-TukeyHSD(angle.eggplant.aov)
+eggplant.HSD<-multcompLetters4(angle.eggplant.aov,eggplant.tukey)
+eggplant.Tukey<-as.data.frame.list(eggplant.HSD$`Temp:CO2`)
+eggplant.Tukey$Treatment<-as.factor(c('Warming+eCO2', 'Warming', 'eCO2', 'Control'))
+
+gcherry.tukey<-TukeyHSD(angle.gcherry.aov)
+gcherry.HSD<-multcompLetters4(angle.gcherry.aov,gcherry.tukey)
+gcherry.Tukey<-as.data.frame.list(gcherry.HSD$`Temp:CO2`)
+gcherry.Tukey$Treatment<-as.factor(c('eCO2','Warming+eCO2', 'Warming', 'Control'))
+
+hibiscus.tukey<-TukeyHSD(angle.hibiscus.aov)
+hibiscus.HSD<-multcompLetters4(angle.hibiscus.aov,hibiscus.tukey)
+hibiscus.Tukey<-as.data.frame.list(hibiscus.HSD$`Temp:CO2`)
+hibiscus.Tukey$Treatment<-as.factor(c( 'eCO2','Warming+eCO2', 'Warming', 'Control'))
+
+#TukeyHSD(angle.mint.aov)
+
+nasturtium.tukey<-TukeyHSD(angle.nasturtium.aov)
+nasturtium.HSD<-multcompLetters4(angle.nasturtium.aov,nasturtium.tukey)
+nasturtium.Tukey<-as.data.frame.list(nasturtium.HSD$`Temp:CO2`)
+nasturtium.Tukey$Treatment<-as.factor(c('Warming+eCO2', 'Control' , 'eCO2','Warming'))
+
+pepper.tukey<-TukeyHSD(angle.pepper.aov)
+pepper.HSD<-multcompLetters4(angle.pepper.aov,pepper.tukey)
+pepper.Tukey<-as.data.frame.list(pepper.HSD$`Temp:CO2`)
+pepper.Tukey$Treatment<-as.factor(c( 'eCO2', 'Warming','Control', 'Warming+eCO2'))
+
+potato.tukey<-TukeyHSD(angle.potato.aov)
+potato.HSD<-multcompLetters4(angle.potato.aov,potato.tukey)
+potato.Tukey<-as.data.frame.list(potato.HSD$`Temp:CO2`)
+potato.Tukey$Treatment<-as.factor(c('Warming+eCO2', 'Warming', 'eCO2', 'Control'))
+
+yarrow.tukey<-TukeyHSD(angle.yarrow.aov)
+yarrow.HSD<-multcompLetters4(angle.yarrow.aov,yarrow.tukey)
+yarrow.Tukey<-as.data.frame.list(yarrow.HSD$`Temp:CO2`)
+yarrow.Tukey$Treatment<-as.factor(c('Control', 'Warming', 'eCO2', 'Warming+eCO2'))
+
+#TukeyHSD(angle.rose.aov)
+
+bbeanLCI.tukey<-TukeyHSD(aovLCIbbean)
+bbeanLCI.HSD<-multcompLetters4(aovLCIbbean,bbeanLCI.tukey)
+bbeanLCI.Tukey<-as.data.frame.list(bbeanLCI.HSD$`Temp:CO2`)
+bbeanLCI.Tukey$Treatment<-as.factor(c('Warming+eCO2', 'Control', 'eCO2', 'Warming'))
+
+mintLCI.tukey<-TukeyHSD(aovLCImint)
+mintLCI.HSD<-multcompLetters4(aovLCImint,mintLCI.tukey)
+mintLCI.Tukey<-as.data.frame.list(mintLCI.HSD$`Temp:CO2`)
+mintLCI.Tukey$Treatment<-as.factor(c('Control','Warming+eCO2' , 'eCO2', 'Warming'))
+
+roseLCI.tukey<-TukeyHSD(aovLCIrose)
+roseLCI.HSD<-multcompLetters4(aovLCIrose,roseLCI.tukey)
+roseLCI.Tukey<-as.data.frame.list(roseLCI.HSD$`Temp:CO2`)
+roseLCI.Tukey$Treatment<-as.factor(c('Warming+eCO2', 'eCO2', 'Warming', 'Control'))
+
+bbean.dunn<-dunnTest(Final_LCI_Avg ~ interaction(Temp,CO2),
+         data=bbeanLCI,
+         method="bonferroni")
+mint.dunn<-dunnTest(Final_LCI_Avg ~ interaction(Temp,CO2),
+         data=mintLCI,
+         method="bonferroni")
+rose.dunn<-dunnTest(Final_LCI_Avg ~ interaction(Temp,CO2),
+         data=roseLCI,
+         method="bonferroni")
+
+
+```
+
+analysis summary tables
+
+```{r}
+
+bbean.summary<- group_by(bbeanAngle, Temp, CO2, Treatment, Plant) %>%
+  summarise(angle=mean(na.omit(Final_Abaxial_AVG)), anglesd=sd(na.omit(Final_Abaxial_AVG)), n=n())
+bbean.summary<-merge(x = bbean.summary, y = bbean.Tukey, by = "Treatment", all.x=T, all.y=T)
+
+tomato.summary<- group_by(tomatoAngle, Temp, CO2, Treatment, Plant) %>%
+  summarise(angle=mean(na.omit(Final_Abaxial_AVG)), anglesd=sd(na.omit(Final_Abaxial_AVG)), n=n())
+tomato.summary<-merge(x = tomato.summary, y = tomato.Tukey, by = "Treatment", all.x=T, all.y=T)
+
+eggplant.summary<- group_by(eggplantAngle, Temp, CO2, Treatment, Plant) %>%
+  summarise(angle=mean(na.omit(Final_Abaxial_AVG)), anglesd=sd(na.omit(Final_Abaxial_AVG)), n=n())
+eggplant.summary<-merge(x = eggplant.summary, y = eggplant.Tukey, by = "Treatment", all.x=T, all.y=T)
+
+gcherry.summary<- group_by(gcherryAngle, Temp, CO2, Treatment, Plant) %>%
+  summarise(angle=mean(na.omit(Final_Abaxial_AVG)), anglesd=sd(na.omit(Final_Abaxial_AVG)), n=n())
+gcherry.summary<-merge(x = gcherry.summary, y = gcherry.Tukey, by = "Treatment", all.x=T, all.y=T)
+
+hibiscus.summary<- group_by(hibiscusAngle, Temp, CO2, Treatment, Plant) %>%
+  summarise(angle=mean(na.omit(Final_Abaxial_AVG)), anglesd=sd(na.omit(Final_Abaxial_AVG)), n=n())
+hibiscus.summary<-merge(x = hibiscus.summary, y = hibiscus.Tukey, by = "Treatment", all.x=T, all.y=T)
+
+
+#mint.summary<- group_by(mintAngle, Temp, CO2, Treatment, Plant) %>%
+#  summarise(angle=mean(na.omit(Final_Abaxial_AVG)), anglesd=sd(na.omit(Final_Abaxial_AVG)), #n=n())
+
+
+nasturtium.summary<- group_by(nasturtiumAngle, Temp, CO2, Treatment, Plant) %>%
+  summarise(angle=mean(na.omit(Final_Abaxial_AVG)), anglesd=sd(na.omit(Final_Abaxial_AVG)), n=n())
+nasturtium.summary<-merge(x = nasturtium.summary, y = nasturtium.Tukey, by = "Treatment", all.x=T, all.y=T)
+
+pepper.summary<- group_by(pepperAngle, Temp, CO2, Treatment, Plant) %>%
+  summarise(angle=mean(na.omit(Final_Abaxial_AVG)), anglesd=sd(na.omit(Final_Abaxial_AVG)), n=n())
+pepper.summary<-merge(x = pepper.summary, y = pepper.Tukey, by = "Treatment", all.x=T, all.y=T)
+
+potato.summary<- group_by(potatoAngle, Temp, CO2, Treatment, Plant) %>%
+  summarise(angle=mean(na.omit(Final_Abaxial_AVG)), anglesd=sd(na.omit(Final_Abaxial_AVG)), n=n())
+potato.summary<-merge(x = potato.summary, y = potato.Tukey, by = "Treatment", all.x=T, all.y=T)
+
+#yarrow.summary<- group_by(yarrowAngle, Temp, CO2, Treatment, Plant) %>%
+#  summarise(angle=mean(na.omit(Final_Abaxial_AVG)), anglesd=sd(na.omit(Final_Abaxial_AVG)), n=n())
+#yarrow.summary<-merge(x = yarrow.summary, y = yarrow.Tukey, by = "Treatment", all.x=T, all.y=T)
+
+#rose.summary<- group_by(roseAngle, Temp, CO2, Treatment, Plant) %>%
+ # summarise(angle=mean(na.omit(Final_Abaxial_AVG)), anglesd=sd(na.omit(Final_Abaxial_AVG)), #n=n())
+
+bbeanLCI.summary<- group_by(bbeanLCI, Temp, CO2, Treatment, Plant) %>%
+  summarise(LCI=mean(na.omit(Final_LCI_Avg)), LCIsd=sd(na.omit(Final_LCI_Avg)), n=n())
+bbeanLCI.summary<-merge(x = bbeanLCI.summary, y = bbeanLCI.Tukey, by = "Treatment", all.x=T, all.y=T)
+
+mintLCI.summary<- group_by(mintLCI, Temp, CO2, Treatment, Plant) %>%
+  summarise(LCI=mean(na.omit(Final_LCI_Avg)), LCIsd=sd(na.omit(Final_LCI_Avg)), n=n())
+mintLCI.summary<-merge(x = mintLCI.summary, y = mintLCI.Tukey, by = "Treatment", all.x=T, all.y=T)
+
+roseLCI.summary<- group_by(roseLCI, Temp, CO2, Treatment, Plant) %>%
+  summarise(LCI=mean(na.omit(Final_LCI_Avg)),
+  LCIsd=sd(na.omit(Final_LCI_Avg)), n=n())
+roseLCI.summary<-merge(x = roseLCI.summary, y = roseLCI.Tukey, by = "Treatment", all.x=T, all.y=T)
+
+#manually entered "PostHoc" values from on Dunn test
+#bbeanLCI.summary<- group_by(bbeanLCI, Temp, CO2, Treatment) %>%
+#  summarise(LCI=mean(na.omit(Final_LCI_Avg)),
+#            LCIsd=sd(na.omit(Final_LCI_Avg)), n=n())
+#bbeanLCI.summary$PostHoc<-c("ab", "ab", "b", "a")
+#mintLCI.summary<- group_by(mintLCI, Temp, CO2, Treatment) %>%
+#  summarise(LCI=mean(na.omit(Final_LCI_Avg)),
+#            LCIsd=sd(na.omit(Final_LCI_Avg)), n=n())
+#mintLCI.summary$PostHoc<-c("a", "ab", "b", "ab")
+#bbean.summary<-merge(x = bbean.summary, y = bbean.Tukey, by = "Treatment", all.x=T, all.y=T)
+#roseLCI.summary<-group_by(roseLCI, Temp, CO2, Treatment) %>%
+#  summarise(LCI=mean(na.omit(Final_LCI_Avg)),
+#            LCIsd=sd(na.omit(Final_LCI_Avg)), n=n())
+#roseLCI.summary$PostHoc<-c("b","ab","b","a")
+
+bbean.summary
+tomato.summary
+eggplant.summary
+gcherry.summary
+hibiscus.summary
+nasturtium.summary
+pepper.summary
+potato.summary
+bbeanLCI.summary
+mintLCI.summary
+roseLCI.summary
+```
+
+Graphing
+
+```{r}
+My_cols<-c("#93CCC3FF","#881D18FF","#E3604CFF","#E4D1C2FF","F9F4F0FF")
+ 
+bbeanplot<-ggplot(bbean.summary, aes(x=Treatment, y=angle, fill = TRUE))+
+  geom_bar(stat='identity', color = "black", width = 0.8, show.legend = FALSE)+
+  scale_fill_manual(values = My_cols)+
+  labs(x = "Treatment", y = "Leaf Angle (°)")+
+  geom_errorbar(aes(ymin = angle-anglesd, ymax = angle+anglesd), width = 0.2)+
+  geom_text(aes(label = Letters), nudge_x = 0, nudge_y = 10, size = 8)+
+  theme(panel.background = element_rect(fill = "#F9F4F0FF", color = "#F9F4F0FF"),
+        plot.margin = margin(1.5,.5,1,0.5, "cm"),
+        plot.background = element_rect(fill = "#F9F4F0FF"),
+        panel.grid.major = element_line(color = "#E3604CFF", linetype = 'dotted'),
+        panel.grid.minor = element_line(color ="#E3604CFF", linetype = 'dotted'),
+        axis.line=element_line(colour="black"),
+        axis.title.x = element_text(size = 24),
+        axis.text.x = element_text(size = 18, colour = 'black', angle= 45, hjust=1),
+        axis.title.y = element_text(size = 24),
+        axis.text.y = element_text(size = 18, colour = 'black'))
+
+tomatoplot<-ggplot(tomato.summary, aes(x=Treatment, y=angle, fill = TRUE))+
+  geom_bar(stat='identity', color = "black", width = 0.8, show.legend = FALSE)+
+  scale_fill_manual(values = My_cols)+
+  labs(x = "Treatment", y = "Leaf Angle (°)")+
+  geom_errorbar(aes(ymin = angle-anglesd, ymax = angle+anglesd), width = 0.2)+
+  geom_text(aes(label = Letters), nudge_x = 0, nudge_y = 10, size = 8)+
+  theme(panel.background = element_rect(fill = "#F9F4F0FF", color = "#F9F4F0FF"),
+        plot.margin = margin(1.5,.5,1,0.5, "cm"),
+        plot.background = element_rect(fill = "#F9F4F0FF"),
+        panel.grid.major = element_line(color = "#E3604CFF", linetype = 'dotted'),
+        panel.grid.minor = element_line(color ="#E3604CFF", linetype = 'dotted'),
+        axis.line=element_line(colour="black"),
+        axis.title.x = element_text(size = 24),
+        axis.text.x = element_text(size = 18, colour = 'black', angle= 45, hjust=1),
+        axis.title.y = element_text(size = 24),
+        axis.text.y = element_text(size = 18, colour = 'black'))
+
+eggplantplot<-ggplot(eggplant.summary, aes(x=Treatment, y=angle, fill = TRUE))+
+  geom_bar(stat='identity', color = "black", width = 0.8, show.legend = FALSE)+
+  scale_fill_manual(values = My_cols)+
+  labs(x = "Treatment", y = "Leaf Angle (°)")+
+  geom_errorbar(aes(ymin = angle-anglesd, ymax = angle+anglesd), width = 0.2)+
+  geom_text(aes(label = Letters), nudge_x = 0, nudge_y = 10, size = 8)+
+  theme(panel.background = element_rect(fill = "#F9F4F0FF", color = "#F9F4F0FF"),
+        plot.margin = margin(1.5,.5,1,0.5, "cm"),
+        plot.background = element_rect(fill = "#F9F4F0FF"),
+        panel.grid.major = element_line(color = "#E3604CFF", linetype = 'dotted'),
+        panel.grid.minor = element_line(color ="#E3604CFF", linetype = 'dotted'),
+        axis.line=element_line(colour="black"),
+        axis.title.x = element_text(size = 24),
+        axis.text.x = element_text(size = 18, colour = 'black', angle= 45, hjust=1),
+        axis.title.y = element_text(size = 24),
+        axis.text.y = element_text(size = 18, colour = 'black'))
+
+gcherryplot<-ggplot(gcherry.summary, aes(x=Treatment, y=angle, fill = TRUE))+
+  geom_bar(stat='identity', color = "black", width = 0.8, show.legend = FALSE)+
+  scale_fill_manual(values = My_cols)+
+  labs(x = "Treatment", y = "Leaf Angle (°)")+
+  geom_errorbar(aes(ymin = angle-anglesd, ymax = angle+anglesd), width = 0.2)+
+  geom_text(aes(label = Letters), nudge_x = 0, nudge_y = 10, size = 8)+
+  theme(panel.background = element_rect(fill = "#F9F4F0FF", color = "#F9F4F0FF"),
+        plot.margin = margin(1.5,.5,1,0.5, "cm"),
+        plot.background = element_rect(fill = "#F9F4F0FF"),
+        panel.grid.major = element_line(color = "#E3604CFF", linetype = 'dotted'),
+        panel.grid.minor = element_line(color ="#E3604CFF", linetype = 'dotted'),
+        axis.line=element_line(colour="black"),
+        axis.title.x = element_text(size = 24),
+        axis.text.x = element_text(size = 18, colour = 'black', angle= 45, hjust=1),
+        axis.title.y = element_text(size = 24),
+        axis.text.y = element_text(size = 18, colour = 'black'))
+
+hibiscusplot<-ggplot(hibiscus.summary, aes(x=Treatment, y=angle, fill = TRUE))+
+  geom_bar(stat='identity', color = "black", width = 0.8, show.legend = FALSE)+
+  scale_fill_manual(values = My_cols)+
+  labs(x = "Treatment", y = "Leaf Angle (°)")+
+  geom_errorbar(aes(ymin = angle-anglesd, ymax = angle+anglesd), width = 0.2)+
+  geom_text(aes(label = Letters), nudge_x = 0, nudge_y = 18, size = 8)+
+  theme(panel.background = element_rect(fill = "#F9F4F0FF", color = "#F9F4F0FF"),
+        plot.margin = margin(1.5,.5,1,0.5, "cm"),
+        plot.background = element_rect(fill = "#F9F4F0FF"),
+        panel.grid.major = element_line(color = "#E3604CFF", linetype = 'dotted'),
+        panel.grid.minor = element_line(color ="#E3604CFF", linetype = 'dotted'),
+        axis.line=element_line(colour="black"),
+        axis.title.x = element_text(size = 24),
+        axis.text.x = element_text(size = 18, colour = 'black', angle= 45, hjust=1),
+        axis.title.y = element_text(size = 24),
+        axis.text.y = element_text(size = 18, colour = 'black'))
+
+#mint.plot<-ggplot(mint.summary, aes(x=Treatment, y=angle, fill = TRUE))+
+#  geom_bar(stat='identity', color = "black", width = 0.8, show.legend = FALSE)+
+#  scale_fill_manual(values = My_cols)+
+#  labs(x = "Treatment", y = "Leaf Angle (°)")+
+#  geom_errorbar(aes(ymin = angle-anglesd, ymax = angle+anglesd), width = 0.2)+
+#  geom_text(aes(label = Letters), nudge_x = 0, nudge_y = 10, size = 13)+
+#  theme(panel.background = element_rect(fill = "#F9F4F0FF", color = "#F9F4F0FF"),
+#        plot.background = element_rect(fill = "#F9F4F0FF"),
+#        panel.grid.major = element_line(color = "#E3604CFF", linetype = 'dotted'),
+#        panel.grid.minor = element_line(color ="#E3604CFF", linetype = 'dotted'),
+#        axis.line=element_line(colour="black"),
+#        axis.title.x = element_text(size = 42),
+#        axis.text.x = element_text(size = 36, colour = 'black'),
+#        axis.title.y = element_text(size = 42),
+#        axis.text.y = element_text(size = 36, colour = 'black'))
+
+nasturtiumplot<-ggplot(nasturtium.summary, aes(x=Treatment, y=angle, fill = TRUE))+
+  geom_bar(stat='identity', color = "black", width = 0.8, show.legend = FALSE)+
+  scale_fill_manual(values = My_cols)+
+  labs(x = "Treatment", y = "Leaf Angle (°)")+
+  geom_errorbar(aes(ymin = angle-anglesd, ymax = angle+anglesd), width = 0.2)+
+  geom_text(aes(label = Letters), nudge_x = 0, nudge_y = 20, size = 8)+
+  theme(panel.background = element_rect(fill = "#F9F4F0FF", color = "#F9F4F0FF"),
+        plot.margin = margin(1.5,.5,1,0.5, "cm"),
+        plot.background = element_rect(fill = "#F9F4F0FF"),
+        panel.grid.major = element_line(color = "#E3604CFF", linetype = 'dotted'),
+        panel.grid.minor = element_line(color ="#E3604CFF", linetype = 'dotted'),
+        axis.line=element_line(colour="black"),
+        axis.title.x = element_text(size = 24),
+        axis.text.x = element_text(size = 18, colour = 'black', angle= 45, hjust=1),
+        axis.title.y = element_text(size = 24),
+        axis.text.y = element_text(size = 18, colour = 'black'))
+
+pepperplot<-ggplot(pepper.summary, aes(x=Treatment, y=angle, fill = TRUE))+
+  geom_bar(stat='identity', color = "black", width = 0.8, show.legend = FALSE)+
+  scale_fill_manual(values = My_cols)+
+  labs(x = "Treatment", y = "Leaf Angle (°)")+
+  geom_errorbar(aes(ymin = angle-anglesd, ymax = angle+anglesd), width = 0.2)+
+  geom_text(aes(label = Letters), nudge_x = 0, nudge_y = 10, size = 8)+
+  theme(panel.background = element_rect(fill = "#F9F4F0FF", color = "#F9F4F0FF"),
+        plot.margin = margin(1.5,.5,1,0.5, "cm"),
+        plot.background = element_rect(fill = "#F9F4F0FF"),
+        panel.grid.major = element_line(color = "#E3604CFF", linetype = 'dotted'),
+        panel.grid.minor = element_line(color ="#E3604CFF", linetype = 'dotted'),
+        axis.line=element_line(colour="black"),
+        axis.title.x = element_text(size = 24),
+        axis.text.x = element_text(size = 18, colour = 'black', angle= 45, hjust=1),
+        axis.title.y = element_text(size = 24),
+        axis.text.y = element_text(size = 18, colour = 'black'))
+
+potatoplot<-ggplot(potato.summary, aes(x=Treatment, y=angle, fill = TRUE))+
+  geom_bar(stat='identity', color = "black", width = 0.8, show.legend = FALSE)+
+  scale_fill_manual(values = My_cols)+
+  labs(x = "Treatment", y = "Leaf Angle (°)")+
+  geom_errorbar(aes(ymin = angle-anglesd, ymax = angle+anglesd), width = 0.2)+
+  geom_text(aes(label = Letters), nudge_x = 0, nudge_y = 10, size = 8)+
+  theme(panel.background = element_rect(fill = "#F9F4F0FF", color = "#F9F4F0FF"),
+        plot.margin = margin(1.5,.5,1,0.5, "cm"),
+        plot.background = element_rect(fill = "#F9F4F0FF"),
+        panel.grid.major = element_line(color = "#E3604CFF", linetype = 'dotted'),
+        panel.grid.minor = element_line(color ="#E3604CFF", linetype = 'dotted'),
+        axis.line=element_line(colour="black"),
+        axis.title.x = element_text(size = 24),
+        axis.text.x = element_text(size = 18, colour = 'black', angle= 45, hjust=1),
+        axis.title.y = element_text(size = 24),
+        axis.text.y = element_text(size = 18, colour = 'black'))
+
+#yarrowplot<-ggplot(yarrow.summary, aes(x=Treatment, y=angle, fill = TRUE))+
+#  geom_bar(stat='identity', color = "black", width = 0.8, show.legend = FALSE)+
+#  scale_fill_manual(values = My_cols)+
+#  labs(x = "Treatment", y = "Leaf Angle (°)")+
+#  geom_errorbar(aes(ymin = angle-anglesd, ymax = angle+anglesd), width = 0.2)+
+#  geom_text(aes(label = Letters), nudge_x = 0, nudge_y = 15, size = 8)+
+#  theme(panel.background = element_rect(fill = "#F9F4F0FF", color = "#F9F4F0FF"),
+#        plot.margin = margin(1.5,.5,1,0.5, "cm"),
+#        plot.background = element_rect(fill = "#F9F4F0FF"),
+#        panel.grid.major = element_line(color = "#E3604CFF", linetype = 'dotted'),
+#        panel.grid.minor = element_line(color ="#E3604CFF", linetype = 'dotted'),
+#        axis.line=element_line(colour="black"),
+#        axis.title.x = element_text(size = 24),
+#        axis.text.x = element_text(size = 18, colour = 'black', angle= 45, hjust=1),
+#        axis.title.y = element_text(size = 24),
+#        axis.text.y = element_text(size = 18, colour = 'black'))
+
+# geom_bar(stat='identity', color = "black", width = 0.8, show.legend = FALSE)+
+#  scale_fill_manual(values = My_cols)+
+#  labs(x = "Treatment", y = "Leaf Angle (°)")+
+#  geom_errorbar(aes(ymin = angle-anglesd, ymax = angle+anglesd), width = 0.2)+
+#  geom_text(aes(label = Letters), nudge_x = 0, nudge_y = 10, size = 13)+
+#  theme(panel.background = element_rect(fill = "#F9F4F0FF", color = "#F9F4F0FF"),
+#        plot.background = element_rect(fill = "#F9F4F0FF"),
+#        panel.grid.major = element_line(color = "#E3604CFF", linetype = 'dotted'),
+#        panel.grid.minor = element_line(color ="#E3604CFF", linetype = 'dotted'),
+#        axis.line=element_line(colour="black"),
+#        axis.title.x = element_text(size = 42),
+#        axis.text.x = element_text(size = 36, colour = 'black'),
+#        axis.title.y = element_text(size = 42),
+#        axis.text.y = element_text(size = 36, colour = 'black'))
+```
+
+LCI Graphs
+```{r}
+My_cols<-c("#93CCC3FF","#881D18FF","#E3604CFF","#E4D1C2FF","F9F4F0FF")
+ 
+bbeanLCIplot<-ggplot(bbeanLCI.summary, aes(x=Treatment, y=LCI, fill = TRUE))+
+  geom_bar(stat='identity', color = "black", width = 0.8, show.legend = FALSE)+
+  scale_fill_manual(values = My_cols)+
+  labs(x = "Treatment", y = "LCI")+
+  geom_errorbar(aes(ymin = LCI-LCIsd, ymax = LCI+LCIsd), width = 0.2)+
+  geom_text(aes(label = Letters), nudge_x = 0, nudge_y = .5, size = 8)+
+  theme(panel.background = element_rect(fill = "#F9F4F0FF", color = "#F9F4F0FF"),
+        plot.margin = margin(1.5,.5,1,0.5, "cm"),
+        plot.background = element_rect(fill = "#F9F4F0FF"),
+        panel.grid.major = element_line(color = "#E3604CFF", linetype = 'dotted'),
+        panel.grid.minor = element_line(color ="#E3604CFF", linetype = 'dotted'),
+        axis.line=element_line(colour="black"),
+        axis.title.x = element_text(size = 24),
+        axis.text.x = element_text(size = 18, colour = 'black', angle= 45, hjust=1),
+        axis.title.y = element_text(size = 24),
+        axis.text.y = element_text(size = 18, colour = 'black'))
+
+mintLCIplot<-ggplot(mintLCI.summary, aes(x=Treatment, y=LCI, fill = TRUE))+
+  geom_bar(stat='identity', color = "black", width = 0.8, show.legend = FALSE)+
+  scale_fill_manual(values = My_cols)+
+  labs(x = "Treatment", y = "LCI")+
+  geom_errorbar(aes(ymin = LCI-LCIsd, ymax = LCI+LCIsd), width = 0.2)+
+  geom_text(aes(label = Letters), nudge_x = 0, nudge_y = .5, size = 8)+
+  theme(panel.background = element_rect(fill = "#F9F4F0FF", color = "#F9F4F0FF"),
+        plot.margin = margin(1.5,.5,1,0.5, "cm"),
+        plot.background = element_rect(fill = "#F9F4F0FF"),
+        panel.grid.major = element_line(color = "#E3604CFF", linetype = 'dotted'),
+        panel.grid.minor = element_line(color ="#E3604CFF", linetype = 'dotted'),
+        axis.line=element_line(colour="black"),
+        axis.title.x = element_text(size = 24),
+        axis.text.x = element_text(size = 18, colour = 'black', angle= 45, hjust=1),
+        axis.title.y = element_text(size = 24),
+        axis.text.y = element_text(size = 18, colour = 'black'))
+
+roseLCIplot<-ggplot(roseLCI.summary, aes(x=Treatment, y=LCI, fill = TRUE))+
+  geom_bar(stat='identity', color = "black", width = 0.8, show.legend = FALSE)+
+  scale_fill_manual(values = My_cols)+
+  labs(x = "Treatment", y = "LCI")+
+  geom_errorbar(aes(ymin = LCI-LCIsd, ymax = LCI+LCIsd), width = 0.2)+
+  geom_text(aes(label = Letters), nudge_x = 0, nudge_y = .5, size = 8)+
+  theme(panel.background = element_rect(fill = "#F9F4F0FF", color = "#F9F4F0FF"),
+        plot.margin = margin(1.5,.5,1,0.5, "cm"),
+        plot.background = element_rect(fill = "#F9F4F0FF"),
+        panel.grid.major = element_line(color = "#E3604CFF", linetype = 'dotted'),
+        panel.grid.minor = element_line(color ="#E3604CFF", linetype = 'dotted'),
+        axis.line=element_line(colour="black"),
+        axis.title.x = element_text(size = 24),
+        axis.text.x = element_text(size = 18, colour = 'black', angle= 45, hjust=1),
+        axis.title.y = element_text(size = 24),
+        axis.text.y = element_text(size = 18, colour = 'black'))
+```
+
+Layout for data visualization
+
+Layout
+```{r}
+
+
+Angle.Poster<-ggarrange(bbeanplot, tomatoplot, eggplantplot, gcherryplot, hibiscusplot, nasturtiumplot, pepperplot, potatoplot, bbeanLCIplot, mintLCIplot, roseLCIplot,
+    labels = c('Bush Bean', 'Tomato', 'Eggplant', 'Ground Cherry', 'Hibiscus', 'Nasturtium', 'Pepper', 'Potato', 'Bush Bean', 'Mint', 'Rose'),
+    font.label= list(size = 20, color = 'black'),
+    label.x = 0,
+    label.y = 1,
+    align = 'hv',
+    ncol=3,nrow=4)
+png(file="Angle.Poster.png", height = 5*320, width = 2.5*320)
+Angle.Poster
+dev.off()
+
+```
+
+
+Dry mass analysis
+
+```{r}
+
+
+bbeanmass.aov<-aov(DryMass ~ Treatment, data=bbeanAngle)
+bbeanMassTukey<-TukeyHSD(bbeanmass.aov)
+bbeanMass.HSD<-multcompLetters4(bbeanmass.aov,bbeanMassTukey)
+bbeanMass.Tukey<-as.data.frame.list(bbeanMass.HSD$Treatment)
+bbeanMass.Tukey$Treatment<-as.factor(c('eCO2','Control','Warming', 'Warming+eCO2'  ))
+bbeanMassSummary<- group_by(bbeanAngle, Plant, Treatment,Group) %>%
+  summarise(, Mass=mean(na.omit(DryMass)), Masssd=sd(na.omit(DryMass)), n=n())
+bbeanMassSummary<-merge(x = bbeanMassSummary, y = bbeanMass.Tukey, by = "Treatment", all.x=T, all.y=T)
+
+Summarytable<-function(data){mass.aov<-aov(DryMass ~ Temp*CO2, data=data)
+MassTukey<-TukeyHSD(mass.aov)
+Mass.HSD<-multcompLetters4(mass.aov,MassTukey)
+Mass.Tukey<-as.data.frame.list(Mass.HSD$`Temp:CO2`)
+Mass.Tukey$Treatment<-as.factor(c('eCO2','Control','Warming', 'Warming+eCO2'  ))
+MassSummary<- group_by(data, Plant, Treatment) %>%
+  summarise(Mass=mean(na.omit(DryMass)), Masssd=sd(na.omit(DryMass)), n=n())
+MassSummary<-merge(x = MassSummary, y = Mass.Tukey, by = "Treatment", all.x=T, all.y=T)
+return(MassSummary)
+}
+
+tomatomass.aov<-aov(DryMass ~ Temp*CO2, data=tomatoAngle)
+tomatoMassTukey<-TukeyHSD(tomatomass.aov)
+tomatoMass.HSD<-multcompLetters4(tomatomass.aov,tomatoMassTukey)
+tomatoMass.Tukey<-as.data.frame.list(tomatoMass.HSD$`Temp:CO2`)
+tomatoMass.Tukey$Treatment<-as.factor(c('eCO2','Control','Warming', 'Warming+eCO2'  ))
+tomatoMassSummary<- group_by(tomatoAngle, Plant, Treatment, Group) %>%
+  summarise(Mass=mean(na.omit(DryMass)), Masssd=sd(na.omit(DryMass)), n=n())
+tomatoMassSummary<-merge(x = tomatoMassSummary, y = tomatoMass.Tukey, by = "Treatment", all.x=T, all.y=T)
+
+eggplantmass.aov<-aov(DryMass ~ Temp*CO2, data=eggplantAngle)
+eggplantMassTukey<-TukeyHSD(eggplantmass.aov)
+eggplantMass.HSD<-multcompLetters4(eggplantmass.aov,eggplantMassTukey)
+eggplantMass.Tukey<-as.data.frame.list(eggplantMass.HSD$`Temp:CO2`)
+eggplantMass.Tukey$Treatment<-as.factor(c('Control','Warming','eCO2', 'Warming+eCO2'  ))
+eggplantMassSummary<- group_by(eggplantAngle, Plant, Treatment, Group) %>%
+  summarise(Mass=mean(na.omit(DryMass)), Masssd=sd(na.omit(DryMass)), n=n())
+eggplantMassSummary<-merge(x = eggplantMassSummary, y = eggplantMass.Tukey, by = "Treatment", all.x=T, all.y=T)
+
+hibiscusmass.aov<-aov(DryMass ~ Temp*CO2, data=hibiscusAngle)
+hibiscusMassTukey<-TukeyHSD(hibiscusmass.aov)
+hibiscusMass.HSD<-multcompLetters4(hibiscusmass.aov,hibiscusMassTukey)
+hibiscusMass.Tukey<-as.data.frame.list(hibiscusMass.HSD$`Temp:CO2`)
+hibiscusMass.Tukey$Treatment<-as.factor(c('eCO2','Control','Warming', 'Warming+eCO2'  ))
+hibiscusMassSummary<- group_by(hibiscusAngle, Plant, Treatment, Group) %>%
+  summarise(Mass=mean(na.omit(DryMass)), Masssd=sd(na.omit(DryMass)), n=n())
+hibiscusMassSummary<-merge(x = hibiscusMassSummary, y = hibiscusMass.Tukey, by = "Treatment", all.x=T, all.y=T)
+
+nasturtiummass.aov<-aov(DryMass ~ Temp*CO2, data=nasturtiumAngle)
+nasturtiumMassTukey<-TukeyHSD(nasturtiummass.aov)
+nasturtiumMass.HSD<-multcompLetters4(nasturtiummass.aov,nasturtiumMassTukey)
+nasturtiumMass.Tukey<-as.data.frame.list(nasturtiumMass.HSD$`Temp:CO2`)
+nasturtiumMass.Tukey$Treatment<-as.factor(c('Control','eCO2', 'Warming+eCO2','Warming'))
+nasturtiumMassSummary<- group_by(nasturtiumAngle, Plant, Treatment, Group) %>%
+  summarise(Mass=mean(na.omit(DryMass)), Masssd=sd(na.omit(DryMass)), n=n())
+nasturtiumMassSummary<-merge(x = nasturtiumMassSummary, y = nasturtiumMass.Tukey, by = "Treatment", all.x=T, all.y=T)
+
+peppermass.aov<-aov(DryMass ~ Temp*CO2, data=pepperAngle)
+pepperMassTukey<-TukeyHSD(peppermass.aov)
+pepperMass.HSD<-multcompLetters4(peppermass.aov,pepperMassTukey)
+pepperMass.Tukey<-as.data.frame.list(pepperMass.HSD$`Temp:CO2`)
+pepperMass.Tukey$Treatment<-as.factor(c('Control','eCO2','Warming','Warming+eCO2'))
+pepperMassSummary<- group_by(pepperAngle, Plant, Treatment, Group) %>%
+  summarise(Mass=mean(na.omit(DryMass)), Masssd=sd(na.omit(DryMass)), n=n())
+pepperMassSummary<-merge(x = pepperMassSummary, y = pepperMass.Tukey, by = "Treatment", all.x=T, all.y=T)
+
+potatomass.aov<-aov(DryMass ~ Temp*CO2, data=potatoAngle)
+potatoMassTukey<-TukeyHSD(potatomass.aov)
+potatoMass.HSD<-multcompLetters4(potatomass.aov,potatoMassTukey)
+potatoMass.Tukey<-as.data.frame.list(potatoMass.HSD$`Temp:CO2`)
+potatoMass.Tukey$Treatment<-as.factor(c('Control','Warming+eCO2','eCO2','Warming'))
+potatoMassSummary<- group_by(potatoAngle, Plant, Treatment, Group) %>%
+  summarise(Mass=mean(na.omit(DryMass)), Masssd=sd(na.omit(DryMass)), n=n())
+potatoMassSummary<-merge(x = potatoMassSummary, y = potatoMass.Tukey, by = "Treatment", all.x=T, all.y=T)
+
+rosemass.aov<-aov(DryMass ~ Temp*CO2, data=roseLCI)
+roseMassTukey<-TukeyHSD(rosemass.aov)
+roseMass.HSD<-multcompLetters4(rosemass.aov,roseMassTukey)
+roseMass.Tukey<-as.data.frame.list(roseMass.HSD$`Temp:CO2`)
+roseMass.Tukey$Treatment<-as.factor(c('eCO2','Warming+eCO2','Warming','Control'))
+roseMassSummary<- group_by(roseLCI, Plant, Treatment, Group) %>%
+  summarise(Mass=mean(na.omit(DryMass)), Masssd=sd(na.omit(DryMass)), n=n())
+roseMassSummary<-merge(x = roseMassSummary, y = roseMass.Tukey, by = "Treatment", all.x=T, all.y=T)
+
+mintmass.aov<-aov(DryMass ~ Temp*CO2, data=mintLCI)
+mintMassTukey<-TukeyHSD(mintmass.aov)
+mintMass.HSD<-multcompLetters4(mintmass.aov,mintMassTukey)
+mintMass.Tukey<-as.data.frame.list(mintMass.HSD$`Temp:CO2`)
+mintMass.Tukey$Treatment<-as.factor(c('Control','eCO2','Warming+eCO2','Warming'))
+mintMassSummary<- group_by(mintLCI, Plant, Treatment, Group) %>%
+  summarise(Mass=mean(na.omit(DryMass)), Masssd=sd(na.omit(DryMass)), n=n())
+mintMassSummary<-merge(x = mintMassSummary, y = mintMass.Tukey, by = "Treatment", all.x=T, all.y=T)
+
+bbeanMass<-ggplot(bbeanMassSummary, aes(x=Treatment, y=Mass, fill = TRUE))+
+  geom_bar(stat='identity', color = "black", width = 0.8, show.legend = FALSE)+
+  scale_fill_manual(values = My_cols)+
+  labs(x = "Treatment", y = "Dry Weight")+
+  geom_errorbar(aes(ymin = Mass-Masssd, ymax = Mass+Masssd), width = 0.2)+
+  geom_text(aes(label = Letters), nudge_x = 0, nudge_y = .5, size = 8)+
+  theme(panel.background = element_rect(fill = "#F9F4F0FF", color = "#F9F4F0FF"),
+        plot.margin = margin(1.5,.5,1,0.5, "cm"),
+        plot.background = element_rect(fill = "#F9F4F0FF"),
+        panel.grid.major = element_line(color = "#E3604CFF", linetype = 'dotted'),
+        panel.grid.minor = element_line(color ="#E3604CFF", linetype = 'dotted'),
+        axis.line=element_line(colour="black"),
+        axis.title.x = element_text(size = 24),
+        axis.text.x = element_text(size = 18, colour = 'black', angle= 45, hjust=1),
+        axis.title.y = element_text(size = 24),
+        axis.text.y = element_text(size = 18, colour = 'black'))
+
+tomatoMass<-ggplot(tomatoMassSummary, aes(x=Treatment, y=Mass, fill = TRUE))+
+  geom_bar(stat='identity', color = "black", width = 0.8, show.legend = FALSE)+
+  scale_fill_manual(values = My_cols)+
+  labs(x = "Treatment", y = "Dry Weight")+
+  geom_errorbar(aes(ymin = Mass-Masssd, ymax = Mass+Masssd), width = 0.2)+
+  geom_text(aes(label = Letters), nudge_x = 0, nudge_y = .5, size = 8)+
+  theme(panel.background = element_rect(fill = "#F9F4F0FF", color = "#F9F4F0FF"),
+        plot.margin = margin(1.5,.5,1,0.5, "cm"),
+        plot.background = element_rect(fill = "#F9F4F0FF"),
+        panel.grid.major = element_line(color = "#E3604CFF", linetype = 'dotted'),
+        panel.grid.minor = element_line(color ="#E3604CFF", linetype = 'dotted'),
+        axis.line=element_line(colour="black"),
+        axis.title.x = element_text(size = 24),
+        axis.text.x = element_text(size = 18, colour = 'black', angle= 45, hjust=1),
+        axis.title.y = element_text(size = 24),
+        axis.text.y = element_text(size = 18, colour = 'black'))
+eggplantMass<-ggplot(eggplantMassSummary, aes(x=Treatment, y=Mass, fill = TRUE))+
+  geom_bar(stat='identity', color = "black", width = 0.8, show.legend = FALSE)+
+  scale_fill_manual(values = My_cols)+
+  labs(x = "Treatment", y = "Dry Weight")+
+  geom_errorbar(aes(ymin = Mass-Masssd, ymax = Mass+Masssd), width = 0.2)+
+  geom_text(aes(label = Letters), nudge_x = 0, nudge_y = .5, size = 8)+
+  theme(panel.background = element_rect(fill = "#F9F4F0FF", color = "#F9F4F0FF"),
+        plot.margin = margin(1.5,.5,1,0.5, "cm"),
+        plot.background = element_rect(fill = "#F9F4F0FF"),
+        panel.grid.major = element_line(color = "#E3604CFF", linetype = 'dotted'),
+        panel.grid.minor = element_line(color ="#E3604CFF", linetype = 'dotted'),
+        axis.line=element_line(colour="black"),
+        axis.title.x = element_text(size = 24),
+        axis.text.x = element_text(size = 18, colour = 'black', angle= 45, hjust=1),
+        axis.title.y = element_text(size = 24),
+        axis.text.y = element_text(size = 18, colour = 'black'))
+roseMass<-ggplot(roseMassSummary, aes(x=Treatment, y=Mass, fill = TRUE))+
+  geom_bar(stat='identity', color = "black", width = 0.8, show.legend = FALSE)+
+  scale_fill_manual(values = My_cols)+
+  labs(x = "Treatment", y = "Dry Weight")+
+  geom_errorbar(aes(ymin = Mass-Masssd, ymax = Mass+Masssd), width = 0.2)+
+  geom_text(aes(label = Letters), nudge_x = 0, nudge_y = .5, size = 8)+
+  theme(panel.background = element_rect(fill = "#F9F4F0FF", color = "#F9F4F0FF"),
+        plot.margin = margin(1.5,.5,1,0.5, "cm"),
+        plot.background = element_rect(fill = "#F9F4F0FF"),
+        panel.grid.major = element_line(color = "#E3604CFF", linetype = 'dotted'),
+        panel.grid.minor = element_line(color ="#E3604CFF", linetype = 'dotted'),
+        axis.line=element_line(colour="black"),
+        axis.title.x = element_text(size = 24),
+        axis.text.x = element_text(size = 18, colour = 'black', angle= 45, hjust=1),
+        axis.title.y = element_text(size = 24),
+        axis.text.y = element_text(size = 18, colour = 'black'))
+mintMass<-ggplot(mintMassSummary, aes(x=Treatment, y=Mass, fill = TRUE))+
+  geom_bar(stat='identity', color = "black", width = 0.8, show.legend = FALSE)+
+  scale_fill_manual(values = My_cols)+
+  labs(x = "Treatment", y = "Dry Weight")+
+  geom_errorbar(aes(ymin = Mass-Masssd, ymax = Mass+Masssd), width = 0.2)+
+  geom_text(aes(label = Letters), nudge_x = 0, nudge_y = .5, size = 8)+
+  theme(panel.background = element_rect(fill = "#F9F4F0FF", color = "#F9F4F0FF"),
+        plot.margin = margin(1.5,.5,1,0.5, "cm"),
+        plot.background = element_rect(fill = "#F9F4F0FF"),
+        panel.grid.major = element_line(color = "#E3604CFF", linetype = 'dotted'),
+        panel.grid.minor = element_line(color ="#E3604CFF", linetype = 'dotted'),
+        axis.line=element_line(colour="black"),
+        axis.title.x = element_text(size = 24),
+        axis.text.x = element_text(size = 18, colour = 'black', angle= 45, hjust=1),
+        axis.title.y = element_text(size = 24),
+        axis.text.y = element_text(size = 18, colour = 'black'))
+pepperMass<-ggplot(pepperMassSummary, aes(x=Treatment, y=Mass, fill = TRUE))+
+  geom_bar(stat='identity', color = "black", width = 0.8, show.legend = FALSE)+
+  scale_fill_manual(values = My_cols)+
+  labs(x = "Treatment", y = "Dry Weight")+
+  geom_errorbar(aes(ymin = Mass-Masssd, ymax = Mass+Masssd), width = 0.2)+
+  geom_text(aes(label = Letters), nudge_x = 0, nudge_y = .5, size = 8)+
+  theme(panel.background = element_rect(fill = "#F9F4F0FF", color = "#F9F4F0FF"),
+        plot.margin = margin(1.5,.5,1,0.5, "cm"),
+        plot.background = element_rect(fill = "#F9F4F0FF"),
+        panel.grid.major = element_line(color = "#E3604CFF", linetype = 'dotted'),
+        panel.grid.minor = element_line(color ="#E3604CFF", linetype = 'dotted'),
+        axis.line=element_line(colour="black"),
+        axis.title.x = element_text(size = 24),
+        axis.text.x = element_text(size = 18, colour = 'black', angle= 45, hjust=1),
+        axis.title.y = element_text(size = 24),
+        axis.text.y = element_text(size = 18, colour = 'black'))
+nasturtiumMass<-ggplot(nasturtiumMassSummary, aes(x=Treatment, y=Mass, fill = TRUE))+
+  geom_bar(stat='identity', color = "black", width = 0.8, show.legend = FALSE)+
+  scale_fill_manual(values = My_cols)+
+  labs(x = "Treatment", y = "Dry Weight")+
+  geom_errorbar(aes(ymin = Mass-Masssd, ymax = Mass+Masssd), width = 0.2)+
+  geom_text(aes(label = Letters), nudge_x = 0, nudge_y = .5, size = 8)+
+  theme(panel.background = element_rect(fill = "#F9F4F0FF", color = "#F9F4F0FF"),
+        plot.margin = margin(1.5,.5,1,0.5, "cm"),
+        plot.background = element_rect(fill = "#F9F4F0FF"),
+        panel.grid.major = element_line(color = "#E3604CFF", linetype = 'dotted'),
+        panel.grid.minor = element_line(color ="#E3604CFF", linetype = 'dotted'),
+        axis.line=element_line(colour="black"),
+        axis.title.x = element_text(size = 24),
+        axis.text.x = element_text(size = 18, colour = 'black', angle= 45, hjust=1),
+        axis.title.y = element_text(size = 24),
+        axis.text.y = element_text(size = 18, colour = 'black'))
+potatoMass<-ggplot(potatoMassSummary, aes(x=Treatment, y=Mass, fill = TRUE))+
+  geom_bar(stat='identity', color = "black", width = 0.8, show.legend = FALSE)+
+  scale_fill_manual(values = My_cols)+
+  labs(x = "Treatment", y = "Dry Weight")+
+  geom_errorbar(aes(ymin = Mass-Masssd, ymax = Mass+Masssd), width = 0.2)+
+  geom_text(aes(label = Letters), nudge_x = 0, nudge_y = .5, size = 8)+
+  theme(panel.background = element_rect(fill = "#F9F4F0FF", color = "#F9F4F0FF"),
+        plot.margin = margin(1.5,.5,1,0.5, "cm"),
+        plot.background = element_rect(fill = "#F9F4F0FF"),
+        panel.grid.major = element_line(color = "#E3604CFF", linetype = 'dotted'),
+        panel.grid.minor = element_line(color ="#E3604CFF", linetype = 'dotted'),
+        axis.line=element_line(colour="black"),
+        axis.title.x = element_text(size = 24),
+        axis.text.x = element_text(size = 18, colour = 'black', angle= 45, hjust=1),
+        axis.title.y = element_text(size = 24),
+        axis.text.y = element_text(size = 18, colour = 'black'))
+hibiscusMass<-ggplot(hibiscusMassSummary, aes(x=Treatment, y=Mass, fill = TRUE))+
+  geom_bar(stat='identity', color = "black", width = 0.8, show.legend = FALSE)+
+  scale_fill_manual(values = My_cols)+
+  labs(x = "Treatment", y = "Dry Weight")+
+  geom_errorbar(aes(ymin = Mass-Masssd, ymax = Mass+Masssd), width = 0.2)+
+  geom_text(aes(label = Letters), nudge_x = 0, nudge_y = .5, size = 8)+
+  theme(panel.background = element_rect(fill = "#F9F4F0FF", color = "#F9F4F0FF"),
+        plot.margin = margin(1.5,.5,1,0.5, "cm"),
+        plot.background = element_rect(fill = "#F9F4F0FF"),
+        panel.grid.major = element_line(color = "#E3604CFF", linetype = 'dotted'),
+        panel.grid.minor = element_line(color ="#E3604CFF", linetype = 'dotted'),
+        axis.line=element_line(colour="black"),
+        axis.title.x = element_text(size = 24),
+        axis.text.x = element_text(size = 18, colour = 'black', angle= 45, hjust=1),
+        axis.title.y = element_text(size = 24),
+        axis.text.y = element_text(size = 18, colour = 'black'))
+
+mass.Poster<-ggarrange(bbeanMass, tomatoMass, eggplantMass, hibiscusMass, nasturtiumMass, pepperMass, potatoMass, mintMass, roseMass,
+    labels = c('Bush Bean', 'Tomato', 'Eggplant', 'Hibiscus', 'Nasturtium', 'Pepper', 'Potato','Mint', 'Rose'),
+    font.label= list(size = 20, color = 'black'),
+    label.x = 0,
+    label.y = 1,
+    align = 'hv',
+    ncol=3,nrow=3)
+png(file="Mass.Poster.png", height = 5*320, width = 2.5*320)
+mass.Poster
+dev.off()
+```
+
+
+
+Summary spreadsheets
+
+```{r}
+
+
+SummaryAngle<-bind_rows(bbean.summary, tomato.summary, eggplant.summary, gcherry.summary, hibiscus.summary, nasturtium.summary, pepper.summary, potato.summary)
+
+SummaryLCI<-bind_rows(bbeanLCI.summary, mintLCI.summary, roseLCI.summary)
+  
+DryMassSummary<- group_by(SurveyAngle, Plant, Treatment) %>%
+  summarise(Mass=mean(na.omit(DryMass)), Masssd=sd(na.omit(DryMass)), n=n())
+
+SummaryAngle
+SummaryLCI
+DryMassSummary
+write.csv(SummaryAngle, "SummaryAngle.csv", row.names=FALSE)
+write.csv(SummaryLCI, "SummaryLCI.csv", row.names=FALSE)
+write.csv(DryMassSummary, "SummaryDryMass.csv", row.names=FALSE)
+```
+
