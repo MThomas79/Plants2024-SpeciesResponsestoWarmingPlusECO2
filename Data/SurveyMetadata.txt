@@ -1,0 +1,29 @@
+META DATA
+
+Plant ID: The unique plant identifier based on either species name or common name, number of individual and group number. 
+
+Plant: The species name in the form of an abreviated genus followed by the species. 
+
+Group: The treatment group number of the plant.
+
+Treatment: The treatment imposed.
+
+Temp: The temperature during treatment.
+
+CO2: The CO2 concentration during treatment.
+
+Day#: Day columns contain a value for Leaf angle (°). The number defines how many days after treatment start the measure was taken. There are three day columns for each day. These columns contain the value for one leaf measured on that day.
+
+Final_adaxial: The average of the last measured day's leaf angle measurements. This is the angle measured between the adaxial (top) of the leaf petiole and the plant stem. This angle is relative to the the stem. 
+
+Final_Abaxial: The final abaxial leaf angle measurement. This is the Final_adaxial measurement subtracted from 90° resulting in the angle of the leaf relative to the surface of the soil. 
+
+LCI_#: LCI columns contain a value for Leaf curve index for a given day(#). This is an arbitrary leaf curling index calculated by dividing the flattened leaf divided by the curled leaf, then minus 1. (LCI = Lf/Lc −  1). These columns contain the value for one leaf measured on that day. 
+
+Final_LCI: The average of the last measured day's LCI. 
+
+Fresh_Mass: the mass of the shoot of the plant at harvest.
+
+DryMass: The mass of the shoot after being dried at 75 °C for 3 days. 
+
+Leaf_Disc: the Mass of a apx 1.12 cm leaf disc punched at the time of harvest. Collected for specific leaf mass calculations. 
